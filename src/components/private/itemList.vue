@@ -6,10 +6,17 @@
       <div class="flex flex-row padding-bottom-10">
         <div class="flex-col width-180">
           <div class="text-color text-center">线上</div>
-          <img
-            class="flex"
-            :src="item.images"
-            alt="" />
+          <div class="flex flex-col justify-center">
+            <img
+              style="
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
+              "
+              :src="item.images"
+              alt="" />
+          </div>
         </div>
         <div class="flex flex-col" :class="item.itemClassName">
           <article class="flex-col flex">
