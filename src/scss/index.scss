@@ -1,0 +1,125 @@
+@import './main.scss';
+.container {
+  @extend .text-base;
+  min-height: 100vh;
+  width: 100%;
+  min-width: unit(1200);
+  font-size: unit(16);
+  line-height: 1.8;
+  background-color: var(--el-bg-color);
+}
+// 登录
+.login-body {
+  @extend .container, .bgc-primary, .justify-center;
+  @extend .padding-left-right-30;
+}
+
+.login-box {
+  max-width: unit(550);
+  width: 100%;
+  margin: auto;
+  @extend .padding-30, .radius-16, .border-placeholder;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-box {
+  @extend .justify-center, .flex-row, .align-center, .flex-wrap, .padding-20;
+
+  span {
+    @extend .text-whiter;
+  }
+}
+
+.header-box {
+  @include bgramp('out', (var(--head-color)));
+  .header-title {
+    font-family: 'PangMenZhengDao-Regular';
+    font-weight: bolder;
+    text-align: center;
+    letter-spacing: unit(5);
+    line-height: 1.4;
+    font-size: unit(40);
+    @include bgramp('line', (var(--title-color)));
+    text-shadow: 0 unit(8) unit(15) #5a7793;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+}
+
+.popover-width {
+  max-width: unit(22);
+}
+// 菜单
+.el-menu {
+  background-color: transparent !important;
+  border-bottom-color: transparent !important;
+  .el-menu-item {
+    flex: 1;
+    display: flex !important;
+    @include transform('skew', (unit(10), unit(10), unit(10), unit(10)));
+    border-bottom: unit(1) solid var(--el-border-color) !important;
+  }
+  .el-menu-item,
+  .el-menu-item.is-active {
+    color: var(--el-menu-text-color) !important;
+    font-size: unit(30);
+    &:hover,
+    &:active,
+    &:visited {
+      background-color: var(--el-bg-color) !important;
+    }
+  }
+  .el-menu-item.is-active {
+    border-bottom-color: transparent !important;
+    background-color: var(--el-bg-color) !important;
+    @extend .radius-ltrt-10, .border-left-right, .border-top;
+    &:first-child {
+      @extend .radius-ltr-10, .border-top, .border-right;
+    }
+    &:last-child {
+      @extend .radius-lbr-10, .border-top, .border-right;
+    }
+  }
+}
+
+// 分页
+.el-pagination {
+  .btn-prev,
+  .more,
+  .number,
+  .btn-next {
+    background-color: transparent !important;
+    color: var(--item-color) !important;
+  }
+
+  .number.is-active {
+    border-radius: 100%;
+    @include bgramp('line', (var(--item-bg)));
+    @include bdramp('line', (var(--item-border)));
+  }
+  .el-input__inner {
+    color: var(--item-color) !important;
+  }
+}
+
+.el-dialog {
+  @extend .border, .padding-left-right-20;
+  background: linear-gradient(120deg, var(--head-color)) !important;
+  @include bdramp('line', (var(--item-border)));
+  background-color: transparent;
+  .el-dialog__title {
+    color: var(--item-color) !important;
+  }
+  .el-dialog__header {
+    @extend .border-bottom, .padding-20;
+  }
+}
+
+.el-table {
+  .el-table_body .el-table__cell {
+    background-color: var(--el-table-color) !important;
+  }
+}

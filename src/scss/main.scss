@@ -1,0 +1,62 @@
+// 设置文本行数
+@include setElementStyleColor;
+@include setElementSize;
+@include setBorderStyle;
+@include onSetAlignOrJustify('align');
+@include onSetAlignOrJustify('justify');
+@include scrollbar(6, getmap($colors, 'success'));
+
+.el-icon {
+  font-size: unit(16);
+}
+.rate-none {
+  .el-form-item__content {
+    margin: 0px !important;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  @include addfix(0, 'box-sizing', 'border-box');
+}
+
+li,
+ol,
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  @extend .text-base;
+  &:hover,
+  &:visited,
+  &:active {
+    @extend a;
+  }
+}
+
+img,
+input,
+button,
+select,
+option,
+textarea {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  &:focus,
+  &:valid,
+  &:active {
+    background-color: transparent;
+  }
+}
+
+body,
+html {
+  font-size: 75%;
+  @extend .text-base;
+  font-family: '宋体', '微软雅黑', 'Trebuchet MS', 'Lucida Sans Unicode',
+    'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}

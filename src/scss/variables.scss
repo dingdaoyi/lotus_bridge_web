@@ -1,0 +1,664 @@
+@function unit($size) {
+  @return calc($size / 16) * 1rem;
+}
+
+// 获取maps某个值
+@function getmap($maps, $key) {
+  @return map-get($maps, $key);
+}
+:root {
+  --el-bg-color: #0b0d15;
+  --el-color-white: #ffffff;
+  --el-color-black: #303133;
+  --el-color-primary: #0ec4ca;
+  --el-color-success: #67c23a;
+  --el-color-warning: #e6a23c;
+  --el-color-danger: #f56c6c;
+  --el-color-error: #f56c6c;
+  --el-color-info: #909399;
+  --el-text-color-regular: #ffffff;
+  --el-text-color-placeholder: #a8abb2;
+  --el-text-color-disabled: #c0c4cc;
+  --el-border-color: #363b40;
+  --el-fill-color-blank: var(--el-bg-color);
+  --el-bg-color-overlay: var(--el-bg-color);
+  --el-border-color-light: var(--el-border-color);
+  --el-border-color-lighter: var(--el-border-color);
+}
+
+$colors: (
+  success: var(--el-color-success),
+  warning: var(--el-color-warning),
+  error: var(--el-color-danger),
+  info: var(--el-color-info),
+  primary: var(--el-color-primary),
+  placeholder: var(--el-text-color-placeholder),
+  disabled: var(--el-text-color-disabled),
+  mask: rgba(0, 0, 0, 0.4),
+  base: var(--el-color-black),
+  whiter: var(--el-color-white)
+);
+$ElColorNone: 'light-3', 'light-5', 'light-7', 'light-8', 'light-9', 'dark-2';
+$ElColors: 'success', 'warning', 'danger', 'info', 'primary';
+$Spacing: 'left', 'right', 'top', 'bottom', 'left-right', 'top-bottom';
+$Radius: 'ltrt', 'ltl', 'ltr', 'lbr', 'lbl', 'lbrb', 'ltlb', 'rtrb', 'ltrb',
+  'lbrt';
+
+@mixin setColorNone() {
+  @each $el, $val in $ElColors {
+    body {
+      --el-color-#{$el}-light-3: var(--el-color-#{$el});
+      --el-color-#{$el}-light-5: var(--el-color-#{$el});
+      --el-color-#{$el}-light-7: var(--el-color-#{$el});
+      --el-color-#{$el}-light-8: var(--el-color-#{$el});
+      --el-color-#{$el}-light-9: var(--el-bg-color);
+      --el-color-#{$el}-dark-2: var(--el-color-#{$el});
+    }
+  }
+}
+@include setColorNone;
+%lineStyle {
+  &::before {
+    content: '';
+    display: block;
+    max-width: unit(8);
+    height: unit(16);
+  }
+}
+
+/* 边框颜色 */
+/* 透明度 */
+$color-opacity: 0.3; // 组件禁用态的透明度
+
+// css3添加前缀
+@mixin addfix($t, $name, $value) {
+  $arrfix: '-webkit-', '-ms-', '-moz-', '-o-', '';
+
+  @each $type in $arrfix {
+    @if ($t==1) {
+      #{$name}: #{$type}#{$value};
+    } @else {
+      #{$type}#{$name}: #{$value};
+    }
+  }
+}
+
+// 设置元素2D和3D转换
+@mixin transform($type, $value) {
+  $types: (
+    'none': 'none',
+    // 定义 2D 转换，使用六个值的矩阵。
+    'matrix': 'matrix(#{$value})',
+    // 定义 3D 转换，使用 16 个值的 4x4 矩阵。
+    'matrix3d': 'matrix3d(#{$value})',
+    // 定义 2D 转换。
+    'translate': 'translate(#{$value})',
+    // 定义 3D 转换。
+    'translate3d': 'translate3d(#{$value})',
+    // 定义转换，只是用 X 轴的值。
+    'translateX': 'translateX(#{$value})',
+    // 定义转换，只是用 Y 轴的值。
+    'translateY': 'translateY(#{$value})',
+    // 定义 3D 转换，只是用 Z 轴的值。
+    'translateZ': 'translateZ(#{$value})',
+    // 定义 2D 缩放转换。
+    'scale': 'scale(#{$value})',
+    // 定义 3D 缩放转换。
+    'scale3d': 'scale3d(#{$value})',
+    // 通过设置 X 轴的值来定义缩放转换。
+    'scaleX': 'scaleX(#{$value})',
+    // 通过设置 Y 轴的值来定义缩放转换。
+    'scaleY': 'scaleY(#{$value})',
+    // 通过设置 Z 轴的值来定义 3D 缩放转换。
+    'scaleZ': 'scaleZ(#{$value})',
+    // 定义 2D 旋转，在参数中规定角度。
+    'rotate': 'rotate(#{$value})',
+    // 定义 3D 旋转。
+    'rotate3d': 'rotate3d(#{$value})',
+    // 定义沿着 X 轴的 3D 旋转。
+    'rotateX': 'rotateX(#{$value})',
+    // 定义沿着 Y 轴的 3D 旋转。
+    'rotateY': 'rotateY(#{$value})',
+    // 定义沿着 Z 轴的 3D 旋转。
+    'rotateZ': 'rotateZ(#{$value})',
+    // 定义沿着 X 和 Y 轴的 2D 倾斜转换。
+    'skew': 'skew(#{$value})',
+    // 定义沿着 X 轴的 2D 倾斜转换。
+    'skewX': 'skewX(#{$value})',
+    // 定义沿着 Y 轴的 2D 倾斜转换。
+    'skewY': 'skewY(#{$value})',
+    // 为 3D 转换元素定义透视视图。
+    'perspective': 'perspective(#{$value})'
+  );
+  @include addfix(0, 'transform', getmap($types, $type));
+}
+
+// 设置所有子元素在2D或3D平面呈现方式
+@mixin transform-style($value) {
+  $types: (
+    // 2D平面
+    'flat': 'flat',
+    // 3D平面
+    '3d': 'preserve-3d'
+  );
+  @include addfix(0, 'transform-style', getmap($types, $value));
+}
+
+// 设置元素过度效果
+@mixin transition($value) {
+  @include addfix(0, 'transition', $value);
+}
+
+// 设置内容展示多列
+@mixin column($items, $rule) {
+  // rule分割线
+  @include addfix(0, 'column-rule', $rule); // items列宽度和数量
+  @include addfix(0, 'items', $items);
+}
+
+// 设置元素渐变
+@mixin bgramp($type, $value) {
+  @if (#{$type}== 'line') {
+    @include addfix(1, 'background-image', 'linear-gradient(#{$value})');
+  } @else {
+    @include addfix(1, 'background-image', 'radial-gradient(#{$value})');
+  }
+}
+
+@mixin bdramp($type, $value) {
+  border-image-slice: 1;
+  @if (#{$type}== 'line') {
+    @include addfix(1, 'border-image', 'linear-gradient(#{$value})');
+  } @else {
+    @include addfix(1, 'border-image', 'radial-gradient(#{$value})');
+  }
+}
+// 设置字体渐变
+@mixin textramp($type, $value) {
+  @include ramp($type, $value);
+  @include addfix(0, 'background-clip', 'text');
+  color: transparent;
+}
+
+// 设置背景图片
+@mixin background(
+  $value,
+  $size: 'cover',
+  $origin: 'border-box',
+  $clip: 'border-box'
+) {
+  background: #{$value}; // $size背景图大小    可选值cover,contain,px|%
+  @include addfix(
+    0,
+    'background-size',
+    #{$size}
+  ); // $origin 设置背景图片起始位置  可选值:padding-box,boder-box,content-box
+  @include addfix(
+    0,
+    'background-origin',
+    #{orugin}
+  ); // $clip设置背景绘制区域    可选值:padding-box,boder-box,content-box,text
+  @include addfix(0, 'background-clip', #{$clip});
+}
+
+// 设置元素圆角
+@mixin radius($value) {
+  @include addfix(0, 'border-radius', #{$value});
+}
+
+// 设置元素阴影
+@mixin shadow($type, $value) {
+  @if ($type== 'in') {
+    @include addfix(0, 'box-shadow', 'inset #{$value}');
+  } @else {
+    @include addfix(0, 'box-shadow', #{$value});
+  }
+}
+
+// 设置文本行数
+@mixin line-clamp($num: 1) {
+  overflow: hidden;
+  @include addfix(0, 'line-clamp', #{$num});
+  @include addfix(1, 'display', 'flex');
+  @include addfix(0, 'box-orient', 'vertical');
+  @content;
+}
+
+// 设置图片外观
+@mixin filter($type, $value) {
+  $types: (
+    // 无SVG滤镜效果。
+    'none': 'none',
+    // 设置对象的模糊效果
+    'blur': 'blur(#{$value})',
+    // 设置对象的亮度。除了百分比外，也可以用非负数表达。
+    'brightness': 'brightness(#{$value})',
+    // 设置对象的对比度。除了百分比外，也可以用0-1的数字表达。
+    'contrast': 'contrast(#{$value})',
+    // 设置对象的灰度。除了百分比外，也可以用0-1的数字表达。
+    'grayscale': 'grayscale(#{$value})',
+    // 设置对象的色相旋转。用0-360数字表达。
+    'hue-rotate': 'hue-rotate(#{$value})',
+    // 设置对象的反色。除了百分比外，也可以用0-1的数字表达。
+    'invert': 'invert(#{$value})',
+    // 设置对象的透明度。除了百分比外，也可以用0-1的数字表达。
+    'opacity': 'opacity(#{$value})',
+    // 设置对象的饱和度。除了百分比外，也可以用非负数表达。
+    'saturate': 'saturate(#{$value})',
+    // 设置对象的褐色程度。除了百分比外，也可以用0-1的数字表达。
+    'sepia': 'sepia(#{$value})',
+    // 设置对象的阴影。第一个长度是向右偏移距离，第二个长度是向下偏移距离，皆可为负值，皆为必传参数；第三个是阴影圆角，可选；第四个是阴影颜色，可选。
+    'drop-shadow': 'drop-shadow(#{$value})',
+    // 设置对象滤镜效果。通过SVG可实现以上所有效果。SVG可写在页面里，也可外部引用。可增加锚节点。
+    'url': 'url(#{$value})'
+  );
+  @include addfix(0, 'filter', getmap($types, $type));
+}
+
+// css3动画
+@mixin keyframes($el, $name, $style: 1s linear infinite) {
+  $arrfix: '@-webkit-keyframes ', '@-ms-keyframes ', '@-moz-keyframes ',
+    '@-o-keyframes ', '@keyframes ';
+
+  #{$el} {
+    @include addfix(0, 'animation', #{$name} #{$style});
+  }
+
+  @each $type in $arrfix {
+    #{$type}#{$name } {
+      @content;
+    }
+  }
+}
+
+@mixin setScrollStyle($type, $size, $color) {
+  #{$type} {
+    width: unit($size);
+    height: unit($size);
+    background-color: $color;
+  }
+
+  /*定义滚动条轨道*/
+  #{$type}-track {
+    background-color: $color;
+  }
+
+  /*定义滑块*/
+  #{$type}-thumb {
+    border-radius: unit($size);
+    background-color: $color;
+  }
+}
+
+@mixin scrollbar($size, $color) {
+  $arrfix: '::-webkit-scrollbar', '::-ms-scrollbar', '::-moz-scrollbar',
+    '::-o-scrollbar', '::scrollbar';
+
+  @each $type in $arrfix {
+    @include setScrollStyle($type, $size, $color);
+  }
+}
+
+@mixin setRadiusSize($name, $size) {
+  $val: unit($size);
+
+  @if $name== 'ltl' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', $val 0 0 0);
+    }
+  } @else if $name== 'ltr' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', 0 $val 0 0);
+    }
+  } @else if $name== 'lbr' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', 0 0 $val 0);
+    }
+  } @else if $name== 'lbl' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', 0 0 0 $val);
+    }
+  }
+  //左上右上/上
+  @else if $name== 'ltrt' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', $val $val 0 0);
+    }
+  }
+
+  //左下右下/下
+  @else if $name== 'lbrb' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', 0 0 $val $val);
+    }
+  }
+
+  // 左上左下/左
+  @else if $name== 'ltlb' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', $val 0 0 $val);
+    }
+  }
+
+  // 右上右下/右
+  @else if $name== 'rtrb' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', 0 $val $val 0);
+    }
+  }
+
+  //左上右下
+  @else if $name== 'ltrb' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', $val 0 $val 0);
+    }
+  }
+
+  //左下右上
+  @else if $name== 'lbrt' {
+    .radius-#{$name}-#{$size} {
+      @include addfix(1, 'border-radius', 0 $val 0 $val);
+    }
+  }
+}
+
+@mixin setBorderStyle {
+  @each $key, $val in $colors {
+    @each $name in $Spacing {
+      @if $name== 'left-right' {
+        .border-#{$name}-#{$key} {
+          border-left: unit(1) solid $val;
+          border-right: unit(1) solid $val;
+        }
+      } @else if $name== 'top-bottom' {
+        .border-#{$name}-#{$key} {
+          border-top: unit(1) solid $val;
+          border-bottom: unit(1) solid $val;
+        }
+      } @else {
+        .border-#{$name}-#{$key} {
+          border-#{$name}: unit(1) solid $val;
+        }
+      }
+    }
+
+    .border-#{$key} {
+      border: unit(1) solid $val;
+    }
+  }
+  @each $name in $Spacing {
+    @if $name== 'left-right' {
+      .border-#{$name} {
+        border-left: unit(1) solid var(--el-border-color);
+        border-right: unit(1) solid var(--el-border-color);
+      }
+    } @else if $name== 'top-bottom' {
+      .border-#{$name} {
+        border-top: unit(1) solid var(--el-border-color);
+        border-bottom: unit(1) solid var(--el-border-color);
+      }
+    } @else {
+      .border-#{$name} {
+        border-#{$name}: unit(1) solid var(--el-border-color);
+      }
+    }
+  }
+
+  .border {
+    border: unit(1) solid var(--el-border-color);
+  }
+}
+
+@mixin setSpacingSize($name, $size) {
+  $val: unit($size);
+
+  @if $name== 'left-right' {
+    .margin-#{$name}-#{$size} {
+      margin-left: $val;
+      margin-right: $val;
+    }
+
+    .padding-#{$name}-#{$size} {
+      padding-left: $val;
+      padding-right: $val;
+    }
+  } @else if $name== 'top-bottom' {
+    .margin-#{$name}-#{$size} {
+      margin-top: $val;
+      margin-bottom: $val;
+    }
+
+    .padding-#{$name}-#{$size} {
+      padding-top: $val;
+      padding-bottom: $val;
+    }
+  } @else {
+    .margin-#{$name}-#{$size} {
+      margin-#{$name}: $val;
+    }
+
+    .padding-#{$name}-#{$size} {
+      padding-#{$name}: $val;
+    }
+  }
+}
+
+@mixin setElementSize {
+  @for $size from 1 through 1000 {
+    @each $name in $Spacing {
+      @include setSpacingSize($name, $size);
+    }
+
+    .width-#{$size} {
+      width: unit($size);
+    }
+    .width-max#{$size} {
+      max-width: unit($size);
+    }
+    .width-min#{$size} {
+      min-width: unit($size);
+    }
+
+    .height-#{$size} {
+      height: unit($size);
+    }
+    .margin-#{$size} {
+      margin: unit($size);
+    }
+
+    .padding-#{$size} {
+      padding: unit($size);
+    }
+
+    @each $name in $Radius {
+      @include setRadiusSize($name, $size);
+    }
+
+    .radius-#{$size} {
+      @include addfix(1, 'border-radius', unit($size));
+    }
+
+    @if ($size<100) {
+      @if ($size<10) {
+        .line-clamp-#{$size} {
+          @include line-clamp($size);
+        }
+      }
+      .gap-#{$size} {
+        gap: unit($size);
+      }
+
+      .font-#{$size} {
+        font-size: unit($size);
+      }
+    }
+  }
+}
+
+@mixin setElementStyleColor {
+  @each $key, $color in $colors {
+    .line-#{$key} {
+      @extend %lineStyle, .flex-row, .align-center;
+
+      &::before {
+        background-color: $color;
+        width: unit(1);
+        @extend .margin-right-10;
+      }
+    }
+
+    .text-#{$key} {
+      color: $color;
+    }
+
+    .bgc-#{$key} {
+      background-color: $color;
+    }
+
+    .button-#{$key} {
+      @extend .bgc-#{$key};
+      color: #ffffff !important;
+    }
+  }
+}
+
+@mixin onSetAlignOrJustify($name) {
+  $items: ('flex-start', 'flex-end', 'center');
+
+  @each $key in $items {
+    @if $key== 'flex-start' {
+      @if $name== 'align' {
+        .align-start {
+          align-items: #{$key};
+          align-self: #{$key};
+        }
+      } @else {
+        .justify-start {
+          justify-content: #{$key};
+        }
+      }
+    } @else if $key== 'flex-end' {
+      @if $name== 'align' {
+        .align-end {
+          align-items: #{$key};
+          align-self: #{$key};
+        }
+      } @else {
+        .justify-end {
+          justify-content: #{$key};
+        }
+      }
+    } @else {
+      @if $name== 'align' {
+        .align-center {
+          align-items: #{$key};
+          align-self: #{$key};
+        }
+      } @else {
+        .justify-center {
+          justify-content: #{$key};
+        }
+      }
+    }
+  }
+}
+
+// 禁止选中
+.unselect {
+  @include addfix(0, 'user-select', 'none');
+}
+
+// 禁用事件
+.unevent {
+  pointer-events: none;
+  cursor: not-allowed;
+  @extend .unselect;
+}
+
+.border-none {
+  border-color: transparent;
+}
+
+// 水平布局
+.flex-row {
+  @include addfix(1, 'display', 'flex');
+  @include addfix(0, 'flex-direction', 'row');
+}
+
+// 垂直布局
+.flex-col {
+  @include addfix(1, 'display', 'flex');
+  @include addfix(0, 'flex-direction', 'column');
+}
+
+// 水平布局换行
+.flex-wrap {
+  @extend .flex-row;
+  @include addfix(0, 'flex-flow', 'wrap');
+}
+
+.flex {
+  @include addfix(0, 'flex', '1');
+}
+
+.overflowy-auto {
+  overflow-y: auto;
+}
+
+.overflowx-auto {
+  overflow-x: auto;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}
+
+.font-weight {
+  font-weight: bold;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.width-full {
+  width: 100% !important;
+}
+
+.height-full {
+  height: 100% !important;
+}
+
+.radius-full {
+  @include addfix(0, 'border-radius', '100%');
+}
+.el-message-box {
+  --el-messagebox-title-color: var(--el-color-white);
+}
+.el-select{
+  width: 100%;
+}
