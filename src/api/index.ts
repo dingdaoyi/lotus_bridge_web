@@ -103,7 +103,7 @@ export const deviceGropCreate = {
 
 // 点位管理
 export const pointList = {
-  url: '//point/page',
+  url: '/point/page',
   type: 'post',
   prefix: '/rustapi',
   request: 'data'
