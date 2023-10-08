@@ -82,8 +82,10 @@ const onDialogChange = ({ data, item }: any) => {
 };
 onBeforeMount(() => {
   pagejson.queryForm = {
-    page: 1,
-    limit: 10,
+    page: {
+      page: 1,
+      limit: 10
+    },
     group_id: Number(route.query.id)
   };
   getListData();
