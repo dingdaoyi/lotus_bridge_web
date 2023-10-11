@@ -17,8 +17,8 @@ export const queryParams = {
   load: pointList,
   params: [
     {
-      label: 'group_id',
-      value: 'group_id'
+      label: 'groupId',
+      value: 'groupId'
     },
     {
       label: 'page',

@@ -86,7 +86,7 @@ onBeforeMount(() => {
       page: 1,
       limit: 10
     },
-    group_id: Number(route.query.id)
+    groupId: Number(route.query.id)
   };
   getListData();
 });
